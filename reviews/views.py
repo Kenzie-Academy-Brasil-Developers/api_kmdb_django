@@ -26,18 +26,18 @@ class ReviewView(APIView, CustomPageNumberPagination):
         return self.get_paginated_response(reviews.data)
 
     def post(self, request: Request, movie_id: int) -> Response:
-        reviews = Review.objects.filter(movie=movie_id)
+        movie = get_object_or_404(Movie, id=movie_id)
+        reviews = Review.objects.filter(
+            movie_id=movie.id, critic=request.user.id
+        )
      
-        movie_obj = get_object_or_404(Movie, id=movie_id)
-        critic_obj = get_object_or_404(User, username=request.user)
         serializer = ReviewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
                 
-        for values in reviews:
-            if values.review == request.data['review']:
-                return Response({'detail': 'Review already exists'}, status.HTTP_403_FORBIDDEN)
+        if len(reviews) > 0:
+            return Response({'detail': 'Review already exists'}, status.HTTP_403_FORBIDDEN)
 
-        serializer.save(critic=critic_obj, movie=movie_obj)
+        serializer.save(critic=request.user, movie=movie)
 
         return Response(serializer.data, status.HTTP_201_CREATED)
 
