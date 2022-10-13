@@ -1,5 +1,3 @@
-# KMDB
-
 <h1 align="center">
 KMDB
 </h1>
