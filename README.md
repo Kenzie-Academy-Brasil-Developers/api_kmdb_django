@@ -18,11 +18,7 @@ Aplicação de gerenciamento de filmes estilo IMDB com autenticação de usuári
 
 - [x] Django
 - [x] Django Rest Framework
-- [x] Coverage Testing
-
-## 🌐 Deploy
-
-[Link do deploy](https://kmdb-caio.herokuapp.com/api/docs/)
+- [x] Authentication Routes
 
 # Instruções:
  
