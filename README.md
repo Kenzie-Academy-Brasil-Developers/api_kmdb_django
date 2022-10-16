@@ -51,3 +51,13 @@ pip install -r requirements.txt
 ```
 ./manage.py runserver
 ```
+
+
+
+A APi tem como princípio adicionar filmes, assim como a criação de categorias e características para relacionar ao filme. Essas estapas de criação, somente um superuser pode realizar. 
+
+Também é possível adicionar avaliações aos filmes desde que esse usário seja um crítico. Ou seja, quando for realizar o cadastro no banco de dados, deve-se passar as informações corretas.
+
+A api possui CRUD e relacionamentos 1-N, N-N.
+
+Api realizada interamente em python com django-rest-framework.
