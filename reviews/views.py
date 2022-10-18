@@ -22,20 +22,20 @@ class ReviewView(APIView, CustomPageNumberPagination):
         reviews_data = Review.objects.filter(movie=movie_id)
         result_page = self.paginate_queryset(reviews_data, request, view=self)
         reviews = ReviewSerializer(result_page, many=True)
-    
+
         return self.get_paginated_response(reviews.data)
 
     def post(self, request: Request, movie_id: int) -> Response:
         movie = get_object_or_404(Movie, id=movie_id)
-        reviews = Review.objects.filter(
-            movie_id=movie.id, critic=request.user.id
-        )
-     
+        reviews = Review.objects.filter(movie_id=movie.id, critic=request.user.id)
+
         serializer = ReviewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-                
+
         if len(reviews) > 0:
-            return Response({'detail': 'Review already exists'}, status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Review already exists"}, status.HTTP_403_FORBIDDEN
+            )
 
         serializer.save(critic=request.user, movie=movie)
 
@@ -44,16 +44,15 @@ class ReviewView(APIView, CustomPageNumberPagination):
 
 class ReviewDetailView(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsOwner]
 
     def get(self, request: Request, movie_id: int, review_id: int) -> Response:
         review_data = get_object_or_404(Review, id=review_id)
         review = ReviewSerializer(review_data)
 
         return Response(review.data)
-        
+
     def delete(self, request: Request, movie_id: int, review_id: int) -> Response:
-        print(request.user)
         review = get_object_or_404(Review, id=review_id)
         self.check_object_permissions(request, review)
         review.delete()

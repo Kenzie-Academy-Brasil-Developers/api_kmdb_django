@@ -11,7 +11,7 @@ from project.pagination import CustomPageNumberPagination
 
 from .models import User
 from .permissions import MyPermissions, IsOwner
-from .serializer import UserSerializer
+from .serializer import AuthSerializer, UserSerializer
 
 
 class UserViewRegister(APIView):
@@ -49,11 +49,11 @@ class UserViewOwner(APIView):
 
 class UserAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = AuthSerializer(data=request.data, context={"request": request})
 
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
 
-        return Response({'token': token.key})
+        return Response({"token": token.key})
